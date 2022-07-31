@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talkish</title>
+    <style>
+        .container{
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            width: 200px;
+            border: 2px solid red;
+            padding: 20px;
+        }
+
+        .message{
+            text-align: center;
+        }
+
+        .btns{
+            border: 2px inset purple;
+            background-color: #85bbeb;
+            border-radius: 20px;
+            width: 80%;
+            height: 30px;
+            margin: 0 auto;
+            margin-top: 20px;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        a{
+            text-decoration: none;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3 class="message">Please Login Or Signup To Continue:</h3>
+        <a href="/login"><div class="btns">Login</div></a>
+        <a href="/signup"><div class="btns">Signup</div></a>
+    </div>
+</body>
+</html>

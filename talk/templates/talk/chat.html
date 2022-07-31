@@ -1,0 +1,228 @@
+{%extends "talk/talkStatic.html"%}
+{%block body%}
+
+{%block style%}
+<style>
+.chatBoxCont{
+    height: 85vh;
+    margin: 10px;
+    border: 7px solid rosybrown;
+    border-radius: 5px;
+    padding: 5px;
+    display: grid;
+    grid-template-rows: 1fr 8fr 1fr;
+}
+
+
+.chatMsgCont{
+    overflow-y: scroll;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+.chatMsgCont::-webkit-scrollbar { 
+    display: none; /* Safari and Chrome */
+}
+
+
+.sendMsgCont{
+    width: 100%;
+    position: relative;
+    bottom: 0;
+    display: grid;
+    grid-template-columns: 8fr 2fr;
+    grid-gap: 6px;
+    height: 100%;
+    
+}
+header{
+    text-align: center;
+    background-color: rgb(47, 47, 189, 0.3);
+}
+
+.msg{
+    margin-top: 10px;
+    width: fit-content;
+    max-width: 50%;
+    background-color:rgba(245, 118, 254, 0.4);
+    padding: 6px;
+
+}
+.selfMsg{
+    margin-left: 50%;
+    text-align: right;
+    background-color: rgba(53, 213, 231, 0.4);
+}
+
+.timeCont{
+    background-color: #dddbd8;
+    width: fit-content;
+}
+
+.startChat{
+    text-align: center;
+    background-color: rgb(255, 218, 204);
+    font-size: 1.5em;
+    font-weight: bold;
+    padding: 3px;
+    width: 30%;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+
+
+*{
+    border-radius: 7px;
+}
+</style>
+
+{%endblock%}
+
+<div class="chatBoxCont">
+    <header class="chatHeader">
+        <h2>
+            {{userName | capfirst}}
+        </h2>
+    </header>
+
+    <div class="chatMsgCont" id = "cmc">
+
+        <!-- Start chat message on the top: -->
+        <div class="startChat other">Say Hy :)</div>
+
+        {%for i in curComboMsg%}
+        {%if i.sender == firstSender%}
+        <div class="msg selfMsg">
+            <div id = "msgTxtOnly">{{i.message}}</div>
+            <span class="timeCont">{{i.date_and_time}}</span>
+        </div>
+        {%else%}
+        <div class="msg other"><div id = "msgTxtOnly">{{i.message}}</div>
+            <span class="timeCont">{{i.date_and_time}}</sp>
+        </div>
+        {%endif%}
+        {%endfor%}
+    </div>
+
+
+    <footer class="sendMsgCont">
+        <input type="text" class="msgSendBox" id="msg">
+        <button class="btn btn-outline-success" type="submit" onclick="newMsg()">Send</button>
+    </footer>
+</div>
+
+
+{% csrf_token %}
+{%endblock%}
+
+{%block script%}
+<script>
+    document.getElementById("msg").onkeydown = (key)=>{
+        if ((key.key)=="Enter"){
+            newMsg()
+        }
+    }
+
+    // Scrolling the chat in the end so that it shows the recent messages:
+    var chatMsgCont = document.querySelector(".chatMsgCont")
+    chatMsgCont.scrollTo(0, chatMsgCont.scrollHeight)
+
+    // For getting the month in words:
+    let months =["Jan.", "Feb.", "March", "April", "May", "June", "July", "Aug.", "Sep.", "Dec."]
+
+    // When no existing messages
+    if (document.getElementById("cmc").querySelectorAll(".other").length== 1){var lastMessage = null}
+
+    // When message exist
+    else{
+    let otherMsgLst= document.getElementById("cmc").querySelectorAll(".other")
+    var lastMessage = otherMsgLst.item(otherMsgLst.length-1).firstElementChild.innerHTML // Getting the text message
+    }
+
+    // For the CSRF token
+    const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value
+
+
+    // To find the current date and time
+    function findDNT(){
+        let dt = new Date()
+        let hrs  = ""
+        let meridian = ""
+        let curHours = dt.getHours()
+        if (curHours>12){meridian = "p.m."; hrs = curHours-12}
+        else if(curHours<12){meridian= "a.m."; hrs= curHours }
+        else{meridian = "a.m."; hrs = "00"}
+
+        var DNT = months[dt.getMonth()] +" "+ dt.getDate() +", "+ dt.getFullYear() + ", "+ hrs + ":" + dt.getMinutes() +" "+ meridian
+        return DNT
+    }
+    
+    // To show new message in the chat window
+    function showMsgInWindow(msg, DNT, sender = "selfMsg"){
+        var msg_timeCont = document.createElement("div")//Creating message & time container
+        msg_timeCont.classList.add("msg", sender)
+        msg_timeCont.innerHTML = msg + "<br>"
+        var timeCont = document.createElement("span")//Creating time container
+        timeCont.classList.add("timeCont")// Adding time container inside message & time container
+        timeCont.innerHTML = DNT
+        msg_timeCont.appendChild(timeCont)// Adding message & time container inside chat message container
+        chatMsgCont.appendChild(msg_timeCont)//adding message & time container inside chat message container
+        msgInpCont.value = ""
+        chatMsgCont.scrollTo(0, chatMsgCont.scrollHeight)// Bringing the newly added message into view
+
+    }
+
+    // To add new messages to database
+    function addMsgToDB(msg){
+        $.ajax(
+            {
+                url: "addMsgToDB",
+                type: "POST",
+                data: {csrfmiddlewaretoken: csrf,
+                       "msgTxt": msg,},
+                success: ()=>{},
+                dataType: "json"
+            }
+        )
+
+    }
+
+    msgInpCont = document.getElementById("msg")
+    function newMsg(){
+        // When an empty message is sent:
+        if (msgInpCont.value ==""){
+            //do nothing
+        }
+        else{
+            var dateNtime = findDNT()
+
+            addMsgToDB(msgInpCont.value)//adding in the database
+            showMsgInWindow(msgInpCont.value, dateNtime)//showing in the view
+
+        }
+
+    }
+
+    // This function check if a new message is added in the database from other side
+    i = 0
+    setInterval(() => {
+        i += 1
+        $.ajax(
+            {
+                url: "checkNewMsg",
+                type: "GET",
+                success: (data)=>{
+                    let lastMsgFromDB = data["msg"]
+
+                    // When new message is added in database
+                    if (lastMsgFromDB != lastMessage){
+                        showMsgInWindow(lastMsgFromDB, findDNT(), "n")
+                        lastMessage = lastMsgFromDB
+                    }
+            }
+            }
+        )
+    }, 700);
+
+
+</script>
+{%endblock%}

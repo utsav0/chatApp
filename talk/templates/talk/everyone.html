@@ -1,0 +1,59 @@
+{% extends "talk/talkStatic.html"%} {%block style%}
+<style>
+  .heading{
+    text-align: center;
+    margin-top: 10px;
+  }
+  .userListCont {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 40px;
+  }
+  .btn{margin-left: 10px;
+  }
+  #userName{
+    display: inline-block;
+    width: 250px;
+  }
+  .userCont{
+    margin-top: 20px;
+  }
+  .btnForm{
+    display: inline-block;
+
+  }
+</style>
+{%endblock%} 
+
+{%block body%}
+
+<h1 class="heading" >ALL USERS</h1>
+
+
+<div class="userListCont">
+
+  <!-- for the user itself -->
+  <div class="userCont">
+    <span ><h4 id = "userName">{{curUserDetail.0}}&nbsp;{{curUserDetail.1}}</h4></span>
+
+    <button class="btn btn-success">You</button>
+    <br>
+  </div>
+
+<!-- for all the other users: -->
+  {%for i in userLst%}
+  {%if i.2 != curUserID%} <!-- Whenever the user is not itself -->
+  <div class="userCont">
+      <span ><h4 id = "userName">{{i.0}}&nbsp;{{i.1}}</h4></span>
+      <form action="chat" class="btnForm" method="post">{% csrf_token %}
+        <button type="submit" class="btn btn-primary" value="{{i.2}}" name ="userID">Send Message</button>
+      </form>
+      <br>
+    </div>
+    {%endif%}
+      {%endfor%}
+  </div>
+
+  {%endblock%}
+</div>

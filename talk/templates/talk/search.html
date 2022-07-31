@@ -1,0 +1,87 @@
+{% extends "talk/talkStatic.html"%}
+
+<!-- CSS -->
+{%block style%}
+<style>
+  .userListCont {
+    margin: 0 auto;
+    width: 50%;
+  }
+  .btn {
+    margin-left: 10px;
+  }
+  #userName {
+    display: inline-block;
+    width: 250px;
+  }
+  .userCont {
+    margin-top: 20px;
+  }
+  .btnForm {
+    display: inline-block;
+  }
+  #mainHeading {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .extraMsg {
+    text-align: center;
+    color: red;
+  }
+</style>
+{%endblock%}
+
+<!-- Body -->
+{%block body%}
+<h1 id="mainHeading">Search results for "{{rawQuery}}":</h1>
+<br />
+
+{% if exactMatchContent == "found"%}
+
+<h2>Exact Matches:</h2>
+<div class="userListCont">
+  {%for i in exactMatchLst%}
+  <div class="userCont">
+    <span><h4 id="userName">{{i.firstName}}&nbsp;{{i.lastName}}</h4></span>
+    <form action="chat" class="btnForm" method="post">
+      {% csrf_token %}
+      <button
+        type="submit"
+        class="btn btn-primary"
+        value="{{i.id}}"
+        name="userID"
+      >
+        Send Message
+      </button>
+    </form>
+    <br />
+  </div>
+  {%endfor%}
+</div>
+
+{% else %}
+
+<h3 class="extraMsg">{{extraMsg}}</h3>
+<h2>Related Matches:</h2>
+<div class="userListCont">
+  {%for i in partialMatchLst%}
+  <div class="userCont">
+    <span><h4 id="userName">{{i.firstName}}&nbsp;{{i.lastName}}</h4></span>
+    <form action="chat" class="btnForm" method="post">
+      {% csrf_token %}
+      <button
+        type="submit"
+        class="btn btn-primary"
+        value="{{i.id}}"
+        name="userID"
+      >
+        Send Message
+      </button>
+    </form>
+    <br />
+  </div>
+  {%endfor%}
+</div>
+
+{% endif %} {%endblock%}
