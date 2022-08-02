@@ -11,7 +11,7 @@ import uuid
 
 class NewUser(models.Model):
     id = models.AutoField(primary_key=True)
-    unique_id = models.CharField(max_length=21, default=uuid.uuid4, unique=True)
+    unique_id = models.CharField(max_length=21)
     firstName = models.CharField(max_length=50, default=None)
     lastName = models.CharField(max_length=50, default=None)
     userEmail = models.CharField(max_length=50, default=None)
