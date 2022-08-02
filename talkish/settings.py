@@ -112,7 +112,7 @@ DATABASES['default'].update(db_from_env)
 
 WHITENOISE_USE_FINDERS = True
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 
@@ -167,7 +167,7 @@ EMAIL_PORT = 587
 
 
 # For Heroku
-# STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # # Activate Django-Heroku.
 # django_heroku.settings(locals())
