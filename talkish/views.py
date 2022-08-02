@@ -83,12 +83,12 @@ def verifyEmail(request):
                 
             
             else:
-                return JsonResponse({"err": "otp test passed and now inside"})
                 fName = request.POST["firstName"]
                 lName = request.POST["lastName"]
                 plainPwd = request.POST["password"]
                 hashedPwd = make_password(plainPwd)
                 uniqueId =generateRandID()
+                return JsonResponse({"err": "otp test passed and now inside"})
 
                 # Adding the new user in database:
                 data = NewUser(firstName=fName, lastName=lName,
