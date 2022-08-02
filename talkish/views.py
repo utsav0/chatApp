@@ -66,11 +66,10 @@ def sendOTP(request):
     return resp
 
 def verifyEmail(request):
+    try:
+        # If the request is from fronend
+        if request.POST:
 
-    # If the request is from fronend
-    if request.POST:
-
-        try:
             enteredOTP = request.POST["enteredOTP"]
             if check_password(enteredOTP, request.COOKIES["oid"]):
                 email = request.POST["email"]
@@ -97,12 +96,13 @@ def verifyEmail(request):
 
             else:
                 return JsonResponse({"location":"OTPErr"})
-            
-        except Exception as e:
-            return JsonResponse({"err": e})
-    # If the url entered directly
-    else:
-        return redirect("/signup")
+                
+        # If the url entered directly
+        else:
+            return redirect("/signup")
+
+    except Exception as e:
+                return JsonResponse({"err": e})
 
 
 
