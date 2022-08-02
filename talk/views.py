@@ -1,11 +1,8 @@
-from turtle import goto
 from django.shortcuts import redirect, render
 from django.http import HttpResponse, JsonResponse
-from requests import request
 from talk.models import NewUser, Message
 from django.contrib.auth.hashers import check_password
 from datetime import datetime
-import threading
 
 # Create your views here.
 

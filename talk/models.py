@@ -1,5 +1,6 @@
 from datetime import datetime
 from operator import mod
+from pyexpat import model
 from django.db import models
 from datetime import datetime
 import uuid

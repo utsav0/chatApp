@@ -1,10 +1,11 @@
-from enum import unique
-from urllib import response
-from django.http import HttpResponse
+import email
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from talk.models import NewUser
 import random
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
+from django.template.loader import get_template
+from django.core.mail import EmailMultiAlternatives
 
 
 # Redirecting to check if user is already logined
@@ -29,6 +30,7 @@ def signupErr(request):
     # When the email already exist that is typed for creating new account
     return render(request, "signup.html", {"additionalMsg": "Email already exist, Please try a different one."})
 
+
 stringForRandom = '''abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()_+}|"{:>?<[];'\/.,`'}'''
 
 # This creates random complex strings to be added as unique id
@@ -41,30 +43,64 @@ def generateRandID():
     else:
         return randomId
 
-def signup(request):
+# For sending otp on email for email verification
+def sendOTP(request):
+
+    plainEmail = request.POST["email"]
+    # global declaredOTP
+    declaredOTP = ""
+    for eachNum in (random.choices("0123456789", k=6)):
+        declaredOTP += eachNum
+
+    htmly = get_template('Email.html')
+    d = { 'otp':declaredOTP }
+    subject, from_email, to = 'OTP for talkish web app', 'talkish.com', plainEmail
+    html_content = htmly.render(d)
+    msg = EmailMultiAlternatives(subject, html_content, from_email, [to])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
+
+    # Setting the otp hash in cookie
+    resp = JsonResponse({})
+    resp.set_cookie("oid", make_password(declaredOTP), 600)
+    return resp
+
+def verifyEmail(request):
+
+    # If the request is from fronend
     if request.POST:
 
-        # Checking if email already exist:
-        email = request.POST.get("email")
+        enteredOTP = request.POST["enteredOTP"]
+        if check_password(enteredOTP, request.COOKIES["oid"]):
+            email = request.POST["email"]
 
-        # Here, if the email exist then the below query will return the len of object as "1" which is true in binary
-        if len(NewUser.objects.filter(userEmail=email)):
-            return redirect("/signupErr")
+            # Checking if email already exist:
+
+            # Here, if the email exist then the below query will return the len of object as "1" which is true in binary
+            if len(NewUser.objects.filter(userEmail=email)):
+                return JsonResponse({"location":"/signupErr"})
+            
+            else:
+                fName = request.POST["firstName"]
+                lName = request.POST["lastName"]
+                plainPwd = request.POST["password"]
+                hashedPwd = make_password(plainPwd)
+                uniqueId =generateRandID()
+
+                # Adding the new user in database:
+                data = NewUser(firstName=fName, lastName=lName,
+                            userEmail=email, userPassword=hashedPwd,
+                            unique_id = uniqueId)
+                data.save()
+                return JsonResponse({"location":"/login?y"})
 
         else:
-            fName = request.POST.get("fName")
-            lName = request.POST.get("lName")
-            password = request.POST.get("password")
-            hashedPassword = make_password(password)
-            uniqueId = generateRandID()
-
-            # Adding the new user in database:
-            data = NewUser(firstName=fName, lastName=lName,
-                           userEmail=email, userPassword=hashedPassword,
-                           unique_id = uniqueId)
-            data.save()
-
-            # Extra y in the url to make it a get request so that it load login page with a success message
-            return redirect("/login?y")
+            return JsonResponse({"location":"OTPErr"})
+    # If the url entered directly
     else:
-        return render(request, "signup.html")
+        return redirect("/signup")
+
+
+
+def signup(request):
+    return render(request, "signup.html")

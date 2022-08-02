@@ -25,6 +25,8 @@ urlpatterns = [
     path("login", views.login, name="login"),
     path("signup", views.signup, name="signup"),
     path("signupErr", views.signupErr, name="signup error page"),
-    path("talk/", include("talk.urls"))
+    path("talk/", include("talk.urls")),
+    path("verifyEmail", views.verifyEmail, name = "verify email"),
+    path("sendOTP", views.sendOTP, name ="send OTP")
 
 ]

@@ -15,7 +15,7 @@
             /* position: absolute; */
             width: 50vw;
         }
-        .signupForm{
+        .signupCont{
             margin-top: 10%;
             margin-left: 25%;
         }
@@ -31,36 +31,182 @@
           grid-template-columns: 1fr 1fr;
           grid-column-gap: 20px;
         }
+
+        .emailVerifyCont{
+          border: none;
+          margin-top: 7px;
+          padding: 0;
+        }
+        .sendOTPBtn{
+          border: 1px solid rosybrown;
+          padding: 5px;
+          height: 100%;
+          display: inline-block;
+          background-color: aquamarine;
+          border-radius: 15px;
+          font-weight: bold;
+          cursor: pointer;
+          user-select: none;
+        }
+        
+        #OTPCont{
+          display: none;
+
+        }
+
+        .submitBtn{
+          pointer-events:none;
+
+        }
+
     </style>
   </head>
   <body>
-    <form class = "signupForm" method="POST" action="/signup">{% csrf_token %}
+    <div class="signupCont">
         <h5 class="additionalMsg">{{additionalMsg}}</h5>
 
         <h2>SignUp</h2>
         <br>
 
         <div  id = "nameCont" class="mb-3 form-control">
-          <input type="text" class="fName" placeholder="First Name" name = "fName" required></input>
-          <input type="text" class="lName" placeholder="Last Name" name = "lName" required></input>
+          <input type="text" class="fName inp" placeholder="First Name" name = "fName" required></input>
+          <input type="text" class="lName inp" placeholder="Last Name" name = "lName" required></input>
         </div>
         
         <div class="mb-3">
           <label for="exampleInputEmail1" class="form-label">Email address</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name = "email" required>
+          <input type="email" class="form-control inp" id="exampleInputEmail1" aria-describedby="emailHelp" name = "email" required>
+
+          <!-- Two elements inside emailverifycont cannot exist together -->
+
+          <div class="emailVerifyCont form-control">
+            <!-- First element -->
+            <div onclick="sendOTP()" class="sendOTPBtn" id="sendOTPBtn">
+              Send OTP
+            </div>
+
+            <!-- Second Elemment -->
+            <input type="text" name="OTP" id="OTPCont" class="inp" placeholder="Enter Your OTP" required>  
+          </div>
+
+
+
+
           <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
         </div>
         <div class="mb-3">
           <label for="exampleInputEmail1" class="form-label">Password</label>
-          <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name = "password" required>
+          <input type="text" class="form-control inp" id="exampleInputEmail1" aria-describedby="emailHelp" name = "password" required>
         </div>
-        <button type="submit" class="btn btn-primary">SignUp</button>
-      </form>
+        <button type="submit" class="submitBtn btn btn-primary " onclick="submitForm()" disabled>SignUp</button>
+      </div>
+      {% csrf_token %}
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script>
+
+      // For the CSRF token
+    const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value
+
+      function sendOTP(){
+
+        // Getting user's email
+        email = document.getElementById("exampleInputEmail1").value
+
+        if (
+          email =="" // Email field is empty
+          || !email.includes("@") // Email field does not have "@"
+          || email.split("@")[0] =="" // There is nothing before "@"
+          || email.split("@")[1] =="" // There is nothing after "@"
+        )
+        {
+          alert("The email field is either empty or invalid!")
+        }
+        else{
+
+
+            // Sending the request to backend for sending the otp
+            $.ajax(
+                {
+                    url: "sendOTP",
+                    type: "POST",
+                    data: {csrfmiddlewaretoken: csrf,
+                          "email": email,},
+                    success: ()=>{},
+                    dataType: "json"
+                }
+            )
+
+            // Removing the send OTP button
+            document.getElementById("sendOTPBtn").style.display = "none";
+
+            // Adding the OTP field
+            document.getElementById("OTPCont").style.display= "block";
+
+            // Enabling the submit button
+            submitBtn = document.querySelector(".submitBtn")
+            submitBtn.disabled = false
+            submitBtn.style.pointerEvents = "all"
+          }
+
+
+      }
+
+      // When form is submit with otp
+      function submitForm(){
+
+        // Getting list of all the input elements
+        inpList = document.getElementsByClassName("inp")
+
+        // Getting all the values separately
+        fName=inpList[0].value
+        lName=inpList[1].value
+        email=inpList[2].value
+        otp=inpList[3].value
+        pwd=inpList[4].value
+        
+        // Giving error if anything is left blank
+        if (fName==""||lName==""||email==""||otp==""||pwd==""){
+          alert("One or more field is left blank")
+        }
+        else{
+          $.ajax(
+                {
+                    url: "verifyEmail",
+                    type: "POST",
+                    data: {csrfmiddlewaretoken: csrf,
+                          "firstName": fName,
+                          "lastName": lName,
+                          "email": email,
+                          "enteredOTP": otp,
+                          "password": pwd},
+                    success: (status)=>{checkStatus(status)},
+                    dataType: "json"
+                }
+            )
+
+        }
+      }
+
+      function checkStatus(location){
+        var loc = location["location"]; // Getting the location from response
+
+        // When OTP is not valid
+        if (loc == "OTPErr"){
+          alert("The OTP is invalid!")
+        }
+
+        // When OTP is valid
+        else{
+          window.location.replace(loc)
+        }
+      }
+
+    </script>
   </body>
 </html>

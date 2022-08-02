@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP</title>
+    <style>
+        #otp{
+            border: 2px solid blue;
+            font-size: 1.8em;
+            padding: 4px;
+        }
+        *{
+            text-align: center;
+        }
+        .note{
+            margin-top: 10px;
+        }
+        .noteTxt{
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        Glad to see you on the talkish app!
+    </h1>
+    
+    <h3>Your One Time Password (OTP) for the talkish app is below:</h3>
+    
+    <span id = "otp">
+        {{otp}}
+    </span>
+    <div class = "note">
+        <b class="noteTxt">NOTE:</b> <span>Valid for only 10 minutes.</span>
+    </div>
+    <br><br><br>
+    
+</body>
+</html>
