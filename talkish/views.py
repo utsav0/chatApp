@@ -88,12 +88,12 @@ def verifyEmail(request):
                 plainPwd = request.POST["password"]
                 hashedPwd = make_password(plainPwd)
                 uniqueId =generateRandID()
-                return JsonResponse({"err": "otp test passed and now inside"})
 
                 # Adding the new user in database:
                 data = NewUser(firstName=fName, lastName=lName,
                             userEmail=email, userPassword=hashedPwd,
                             unique_id = uniqueId)
+                return JsonResponse({"err": "otp test passed and now inside"})
                 data.save()
                 return JsonResponse({"location":"/login?y"})
 
