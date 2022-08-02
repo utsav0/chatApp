@@ -93,7 +93,11 @@ def verifyEmail(request):
                 data = NewUser(firstName=fName, lastName=lName,
                             userEmail=email, userPassword=hashedPwd,
                             unique_id = uniqueId)
-                data.save()
+                try:
+                    data.save()
+                except Exception as e:
+                    return JsonResponse({"location": e})
+                    
                 return JsonResponse({"location":"/login?y"})
 
         else:
