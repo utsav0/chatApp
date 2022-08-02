@@ -13,8 +13,13 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 from decouple import config
 import os, django_heroku
-environ.Env.read_env()
+import environ
 from django.core.management.utils import get_random_secret_key
+
+
+# Activating environment variables
+env = environ.Env()
+environ.Env.read_env()
 
 
 
@@ -133,8 +138,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # For email confirmation
 EMAIL_USE_TLS = True  
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = os.environ['email']
-EMAIL_HOST_PASSWORD = os.environ['emailPassword']
+EMAIL_HOST_USER = env('email')
+EMAIL_HOST_PASSWORD = env('emailPwd')
 EMAIL_PORT = 587  
 
 
