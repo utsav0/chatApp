@@ -93,8 +93,8 @@ def verifyEmail(request):
                 data = NewUser(firstName=fName, lastName=lName,
                             userEmail=email, userPassword=hashedPwd,
                             unique_id = uniqueId)
-                return JsonResponse({"err": "otp test passed and now inside"})
                 data.save()
+                return JsonResponse({"err": "otp test passed and now inside"})
                 return JsonResponse({"location":"/login?y"})
 
         else:
