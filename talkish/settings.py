@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 from decouple import config
 import os, django_heroku
+environ.Env.read_env()
+from django.core.management.utils import get_random_secret_key
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,7 +26,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = get_random_secret_key()
+# SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -129,8 +133,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # For email confirmation
 EMAIL_USE_TLS = True  
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = config("email")
-EMAIL_HOST_PASSWORD = config("emailPwd")
+EMAIL_HOST_USER = os.environ['email']
+EMAIL_HOST_PASSWORD = os.environ['emailPassword']
 EMAIL_PORT = 587  
 
 
