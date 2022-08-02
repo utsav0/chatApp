@@ -73,7 +73,6 @@ def verifyEmail(request):
         if check_password(enteredOTP, request.COOKIES["oid"]):
             email = request.POST["email"]
             
-            return JsonResponse({"err": "otp test passed and now inside"})
 
 
             # Checking if email already exist:
@@ -81,8 +80,10 @@ def verifyEmail(request):
             # Here, if the email exist then the below query will return the len of object as "1" which is true in binary
             if len(NewUser.objects.filter(userEmail=email)):
                 return JsonResponse({"location":"/signupErr"})
+                
             
             else:
+                return JsonResponse({"err": "otp test passed and now inside"})
                 fName = request.POST["firstName"]
                 lName = request.POST["lastName"]
                 plainPwd = request.POST["password"]
