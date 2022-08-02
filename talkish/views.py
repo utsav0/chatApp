@@ -70,9 +70,11 @@ def verifyEmail(request):
     if request.POST:
 
         enteredOTP = request.POST["enteredOTP"]
-        return JsonResponse({"err": "otp test passed and now inside"})
         if check_password(enteredOTP, request.COOKIES["oid"]):
             email = request.POST["email"]
+            
+            return JsonResponse({"err": "otp test passed and now inside"})
+
 
             # Checking if email already exist:
 
