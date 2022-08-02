@@ -66,43 +66,40 @@ def sendOTP(request):
     return resp
 
 def verifyEmail(request):
-    try:
-        # If the request is from fronend
-        if request.POST:
+    # If the request is from fronend
+    if request.POST:
 
-            enteredOTP = request.POST["enteredOTP"]
-            if check_password(enteredOTP, request.COOKIES["oid"]):
-                email = request.POST["email"]
+        enteredOTP = request.POST["enteredOTP"]
+        return JsonResponse({"err": "otp test passed and now inside"})
+        if check_password(enteredOTP, request.COOKIES["oid"]):
+            email = request.POST["email"]
 
-                # Checking if email already exist:
+            # Checking if email already exist:
 
-                # Here, if the email exist then the below query will return the len of object as "1" which is true in binary
-                if len(NewUser.objects.filter(userEmail=email)):
-                    return JsonResponse({"location":"/signupErr"})
-                
-                else:
-                    fName = request.POST["firstName"]
-                    lName = request.POST["lastName"]
-                    plainPwd = request.POST["password"]
-                    hashedPwd = make_password(plainPwd)
-                    uniqueId =generateRandID()
-
-                    # Adding the new user in database:
-                    data = NewUser(firstName=fName, lastName=lName,
-                                userEmail=email, userPassword=hashedPwd,
-                                unique_id = uniqueId)
-                    data.save()
-                    return JsonResponse({"location":"/login?y"})
-
+            # Here, if the email exist then the below query will return the len of object as "1" which is true in binary
+            if len(NewUser.objects.filter(userEmail=email)):
+                return JsonResponse({"location":"/signupErr"})
+            
             else:
-                return JsonResponse({"location":"OTPErr"})
-                
-        # If the url entered directly
-        else:
-            return redirect("/signup")
+                fName = request.POST["firstName"]
+                lName = request.POST["lastName"]
+                plainPwd = request.POST["password"]
+                hashedPwd = make_password(plainPwd)
+                uniqueId =generateRandID()
 
-    except Exception as e:
-                return JsonResponse({"err": e})
+                # Adding the new user in database:
+                data = NewUser(firstName=fName, lastName=lName,
+                            userEmail=email, userPassword=hashedPwd,
+                            unique_id = uniqueId)
+                data.save()
+                return JsonResponse({"location":"/login?y"})
+
+        else:
+            return JsonResponse({"location":"OTPErr"})
+            
+    # If the url entered directly
+    else:
+        return redirect("/signup")
 
 
 
