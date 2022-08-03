@@ -88,26 +88,6 @@ DATABASES = {
     }
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': '<database_name>',
-#         'USER': '<username>',
-#         'PASSWORD': '<password>',
-#         'HOST': 'localhost',
-#         'PORT': '',
-#     }
-# }
-
-# WHITENOISE_USE_FINDERS = True
-
-# db_from_env = dj_database_url.config(conn_max_age=500)
-# DATABASES['default'].update(db_from_env)
-
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-
-
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 

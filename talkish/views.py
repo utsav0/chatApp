@@ -47,7 +47,6 @@ def generateRandID():
 def sendOTP(request):
 
     plainEmail = request.POST["email"]
-    # global declaredOTP
     declaredOTP = ""
     for eachNum in (random.choices("0123456789", k=6)):
         declaredOTP += eachNum
