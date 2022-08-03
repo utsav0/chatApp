@@ -10,7 +10,7 @@ from datetime import datetime
 class NewUser(models.Model):
     models.SlugField(max_length=255)
     id = models.AutoField(primary_key=True)
-    unique_id = models.CharField(max_length=21,)
+    unique_id = models.CharField(max_length=21)
     firstName = models.CharField(max_length=150, default=None)
     lastName = models.CharField(max_length=150, default=None)
     userEmail = models.CharField(max_length=150, default=None)
