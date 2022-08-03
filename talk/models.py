@@ -1,12 +1,11 @@
 from datetime import datetime
-from operator import mod
-from pyexpat import model
 from django.db import models
 from datetime import datetime
 
 # Create your models here.
 
 # for user data
+
 
 class NewUser(models.Model):
     models.SlugField(max_length=255)

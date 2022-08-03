@@ -7,6 +7,7 @@ from django.template.loader import get_template
 from django.core.mail import EmailMultiAlternatives
 
 
+
 # Redirecting to check if user is already logined
 def redirectToTalk(request):
     return redirect("/talk")
