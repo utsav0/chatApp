@@ -93,7 +93,7 @@ def verifyEmail(request):
                 fName = "testname"
                 lName = "testsirname"
                 plainPwd = "mypwd"
-                hashedPwd = "mypwd"
+                # hashedPwd = "mypwd"
                 uniqueId = "uniqueid"
                 email = "email@gmail.com"
 
