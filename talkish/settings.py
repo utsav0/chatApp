@@ -161,10 +161,10 @@ EMAIL_PORT = 587
 
 ###################### Additionally added for heroku app ######################
 
+PROJECT_ROOT   =   os.path.join(os.path.abspath(__file__))
+STATIC_ROOT  =   os.path.join(PROJECT_ROOT, 'staticfiles')
 
 
-# PROJECT_ROOT   =   os.path.join(os.path.abspath(__file__))
-# STATIC_ROOT  =   os.path.join(PROJECT_ROOT, 'staticfiles')
 
 # # Extra lookup directories for collectstatic to find static files
 # STATICFILES_DIRS = (
