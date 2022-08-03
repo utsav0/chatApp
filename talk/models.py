@@ -10,6 +10,7 @@ import uuid
 # for user data
 
 class NewUser(models.Model):
+    models.SlugField(max_length=255)
     id = models.AutoField(primary_key=True)
     unique_id = models.CharField(max_length=21,)
     firstName = models.CharField(max_length=150, default=None)
