@@ -15,7 +15,7 @@ class NewUser(models.Model):
     firstName = models.CharField(max_length=50, default=None)
     lastName = models.CharField(max_length=50, default=None)
     userEmail = models.CharField(max_length=50, default=None)
-    userPassword = models.CharField(max_length=50, default=None)
+    userPassword = models.CharField(max_length=150, default=None)
 
     def __str__(self):
         return self.firstName
