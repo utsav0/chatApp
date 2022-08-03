@@ -89,15 +89,6 @@ def verifyEmail(request):
                 hashedPwd = make_password(plainPwd)
                 uniqueId =generateRandID()
 
-
-                #Added for testing
-                fName = "testname"
-                lName = "testsirname"
-                plainPwd = "mypwd"
-                # hashedPwd = "mypwd"
-                uniqueId = "uniqueid"
-                email = "email@gmail.com"
-
                 # Adding the new user in database:
                 data = NewUser(firstName=fName, lastName=lName,
                             userEmail=email, userPassword=hashedPwd,
