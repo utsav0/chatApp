@@ -88,6 +88,7 @@ def verifyEmail(request):
                 plainPwd = request.POST["password"]
                 hashedPwd = make_password(plainPwd)
                 uniqueId =generateRandID()
+                return ({"location": [fName, lName, plainPwd, hashedPwd, uniqueId]})
 
                 # Adding the new user in database:
                 data = NewUser(firstName=fName, lastName=lName,
